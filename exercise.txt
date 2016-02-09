@@ -1,0 +1,42 @@
+EX1
+create database decodemtl_addressbook;
+use decodemtl_addressbook;
+create table account (id int primary key auto_increment, email varchar(255), password varchar(40), createdOn DATETIME, modifiedOn datetime)
+create table addressBook (id int primary key auto_increment, acountId int, name varchar(255), createdOn datetime, modifiedOn datetime);
+create table entry (id int primary key auto_increment, addressBookId int, firstName varchar(255), lastName varchar(255), type enum('phone', 'address','electronic-mail'));
+create table phone (id int primary key auto_increment, entryId int, type enum('home','work','other'), subtype enum('landline','cellular','fax'), content varchar(255));
+create table electronicMail (id int primary key auto_increment, entryId int, type enum('home','work','other'), content varchar(255));
+create table address (id int primary key auto_increment, entryId int, type enum('home','work','other'), addressLine1 varchar(255), addressLine2 varchar(255), city varchar(255), province varchar(128), country varchar(128), postalCode varchar(10));
+
+alter table account rename to Account;
+alter table addressBook rename to AddressBook;
+alter table entry rename to Entry;
+alter table phone rename to Phone;
+alter table electronicMail rename to Email;
+alter table address rename to Address;
+
+alter table AddressBook change column acountId accountId int not null;
+alter table Email rename to ElectronicMail;
+
+alter table Entry add birthday datetime;
+
+EX2
+source data/import-account.sql;
+source data/import-addressbook.sql;
+source data/import-entry.sql;
+
+EX3
+select LOWER(country),count(country) from Address group by country order by count(country) desc;
+
+EX4
+create or replace view `tempNames` as 
+select firstName from Entry where addressBookId=(select id from AddressBook where name="Pharetra Ut Limited");
+select concat(substring(firstName,1,length(firstName)-1), upper(substring(firstName,length(firstName), 1))) from tempNames;
+
+EX5
+select email from Account where id=(select accountId from AddressBook where id=100);
+
+EX6
+select content from Phone where entryId=(select id from Entry where firstName ="Charlotte" and lastName="Jenkins");
+
+EX7
