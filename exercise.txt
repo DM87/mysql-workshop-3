@@ -40,3 +40,35 @@ EX6
 select content from Phone where entryId=(select id from Entry where firstName ="Charlotte" and lastName="Jenkins");
 
 EX7
+select distinct substring_index(content,'@',-1) from ElectronicMail;
+
+EX8
+select subtype, count(subtype) from Phone where entryId in (select id from Entry where birthday between '1960/10/01%' and '1961/10/31%') group by subtype;
+
+EX9
+select distinct email from Account join AddressBook on Account.id=AddressBook.accountId join Entry on AddressBook.id=Entry.addressBookId join Phone on Entry.id=Phone.entryId where entryId in (select entryId from Phone where content like '_-%');
+
+EX10
+select * from Entry where time(birthday) between '20:00:00' and '20:59:59' and month(birthday) != 2;
+
+
+EX11
+select distinct city, country from Address where country in ('Canada','Japan','Austria','Isle of Man','Ireland');
+
+EX12
+select substring_index(content,' ',1) as `Area Code`, right(substring_index(content,'-',1),3) as 'Exchange', substring_index(content,'-',-1) as 'Station code' from Phone limit 100;
+
+EX13
+select createdOn, modifiedOn, datediff(modifiedOn,createdOn) from AddressBook;
+
+EX14
+select insert(insert(insert(reverse(replace(replace(replace(replace(content, '(',''),')',''),'-',''),' ','')),7,0,'-'),4,0,')'),1,0,'(') from Phone where subtype='fax';
+
+EX15
+update Phone set type = case when type='home' then 'work' when type='work' then 'home' end where type in ('work','home');
+
+EX16
+
+select substring(addressLine1,15,4) as civicNum from Address where addressLine1 REGEXP '^P\.O.*' AND id between 715 and 800 UNION 
+select left(substring_index(addressLine1,'-',-1),4) as civicNum from Address where addressLine1 NOT LIKE 'P.O.%' AND id between 715 and 800;
+
